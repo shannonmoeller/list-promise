@@ -2,7 +2,7 @@
 
 [![NPM version][npm-img]][npm-url] [![Downloads][downloads-img]][npm-url] [![Build Status][travis-img]][travis-url] [![Coverage Status][coveralls-img]][coveralls-url] [![Chat][gitter-img]][gitter-url] [![Tip][amazon-img]][amazon-url]
 
-Promise-aware array iterators.
+Promise-aware array manipulation iterators.
 
 ## Install
 
@@ -14,11 +14,23 @@ Promise-aware array iterators.
 import list from 'list-promise';
 import fs from 'fs-promise';
 
+// Manipulate a given array
 list(['src/foo.js', 'src/bar.js'])
     .map(path => fs.readFile(path, 'utf8'))
     .map(file => file.split('').reverse().join(''))
     .reduce((bundle, file) => bundle + file, '')
-    .then(bundle => fs.writeFile('bundle.js', buf));
+    .then(bundle => fs.writeFile('bundle.js', bundle));
+
+// Or, pre-build an array manipulation pipeline
+const bundler = list()
+    .map(path => fs.readFile(path, 'utf8'))
+    .map(file => file.split('').reverse().join(''))
+    .reduce((bundle, file) => bundle + file, '')
+
+// To resolve later
+bundler
+    .resolve(['src/foo.js', 'src/bar.js'])
+    .then(bundle => fs.writeFile('bundle.js', bundle));
 ```
 
 ## API
@@ -43,11 +55,20 @@ Creates a new `ListPromise` for the results of calling a provided mapper functio
 
 Creates a new `ListPromise` for the results of calling a provided reducer function on every element in the list.
 
-#### .reduce(fn): Promise
+#### .reduce(fn, [initialValue]): ListPromise
 
 - `fn` `Function(context, item, i, items) : context` Reduce callback.
+- `initialValue` `*` Initial value to pass to the reducer. (Default: `undefined`)
 
-Creates a new `Promise` for the results of calling a provided reducer function on every element in the list.
+Creates a new `ListPromise` for the results of calling a provided reducer function on every element in the list.
+
+#### .resolve(list): ListPromise
+
+- `list` `Array<*|Promise<*>>` A list of items which may or may not be Promises.
+
+List manipulations happen using an internal pipeline. These pipelines may be pre-built and applied to lists later.
+
+**Note:** Initial values given to `.reduce()` will be shared between every call to `.resolve()`. If the initial value is an object or array, this could have undesired effects. You'll likely want to clone the initial value in the reduce function.
 
 ## Contribute
 

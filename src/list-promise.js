@@ -44,33 +44,44 @@ async function applyAction(list, { type, fn, init }) {
 }
 
 async function applyActions(list, actions) {
-	return actions.reduce(applyAction, await list);
+	list = await list;
+
+	return actions.reduce(applyAction, list);
 }
 
 /**
- * @method awaitList
+ * @method listPromise
  * @param {Array|Promise<Array>}
  * @return {Promise}
  */
-export default function awaitlist(list) {
+export default function listPromise(list) {
 	const actions = [];
-	const promise = applyActions(list, actions)
-		.then(deepResolve);
+	const methods = {
+		map(fn) {
+			actions.push({ type: 'map', fn });
 
-	promise.map = function (fn) {
-		actions.push({ type: 'map', fn });
-		return promise;
+			return this;
+		},
+
+		reduce(fn, init) {
+			actions.push({ type: 'reduce', fn, init });
+
+			return this;
+		},
+
+		filter(fn) {
+			actions.push({ type: 'filter', fn });
+
+			return this;
+		},
+
+		resolve(list = []) {
+			const promise = applyActions(list, actions)
+				.then(deepResolve);
+
+			return Object.assign(promise, methods);
+		}
 	};
 
-	promise.reduce = function (fn, init) {
-		actions.push({ type: 'reduce', fn, init });
-		return promise;
-	};
-
-	promise.filter = function (fn) {
-		actions.push({ type: 'filter', fn });
-		return promise;
-	};
-
-	return promise;
+	return methods.resolve(list);
 }

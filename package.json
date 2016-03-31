@@ -5,9 +5,9 @@
   "main": "lib/list-promise.js",
   "scripts": {
     "coveralls": "nyc report -r text-lcov | coveralls",
-    "build": "babel src --out-dir lib",
+    "build": "rm -rf lib && babel src --out-dir lib",
     "prepublish": "npm test && npm run build",
-    "pretest": "xo",
+    "pretest": "xo {src,test}/**/*.js",
     "test": "nyc ava -v",
     "posttest": "nyc report -r lcov",
     "watch": "chokidar '{src,test}/**' -c 'npm test'"
