@@ -1,6 +1,6 @@
 {
   "name": "list-promise",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Maximally-concurrent Promise-based array manipulation.",
   "main": "lib/list-promise.js",
   "scripts": {
