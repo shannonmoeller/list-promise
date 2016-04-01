@@ -2,7 +2,7 @@
 
 [![NPM version][npm-img]][npm-url] [![Downloads][downloads-img]][npm-url] [![Build Status][travis-img]][travis-url] [![Coverage Status][coveralls-img]][coveralls-url] [![Chat][gitter-img]][gitter-url] [![Tip][amazon-img]][amazon-url]
 
-Maximally-concurrent Promise-based array manipulation.
+Maximally-concurrent Promise-aware array iteration.
 
 ## Install
 
@@ -21,7 +21,7 @@ list(['src/foo.js', 'src/bar.js'])
     .reduce((bundle, file) => bundle + file, '')
     .then(bundle => fs.writeFile('bundle.js', bundle));
 
-// Or, pre-build an array manipulation pipeline
+// Or, pre-build the array iteration pipeline
 const bundler = list()
     .map(path => fs.readFile(path, 'utf8'))
     .map(file => file.split('').reverse().join(''))
@@ -37,9 +37,9 @@ bundler
 
 ### listPromise(list) : ListPromise
 
-- `list` `Array<*|Promise<*>>` A list of items which may or may not be Promises.
+- `list` `Array|Promise<Array>` A list of items which may or may not be Promises.
 
-Creates a promise with `map` and `reduce` methods that can be used to iterate over list items as they are resolved.
+Creates a promise with `map`, `reduce`, and `filter` methods that can be used to iterate over list items as they are resolved.
 
 ### ListPromise
 
@@ -47,24 +47,24 @@ Creates a promise with `map` and `reduce` methods that can be used to iterate ov
 
 - `fn` `Function(item, i, items) : item` Map callback.
 
-Creates a new `ListPromise` for the results of calling a provided mapper function on every element in the list.
+Creates a new `ListPromise` for the results of mapping a list with a given map function.
 
 #### .filter(fn): ListPromise
 
 - `fn` `Function(item, i, items) : context` Filter callback.
 
-Creates a new `ListPromise` for the results of calling a provided reducer function on every element in the list.
+Creates a new `ListPromise` for the results of filtering a list with a given filter function.
 
 #### .reduce(fn, [initialValue]): ListPromise
 
 - `fn` `Function(context, item, i, items) : context` Reduce callback.
-- `initialValue` `*` Initial value to pass to the reducer. (Default: `undefined`)
+- `initialValue` `*` (default: `undefined`) Initial value to pass to the reducer.
 
-Creates a new `ListPromise` for the results of calling a provided reducer function on every element in the list.
+Creates a new `ListPromise` for the result of reducing a list with a given reducer function. If the reduction results in an array, that array may then be iterated.
 
 #### .resolve(list): ListPromise
 
-- `list` `Array<*|Promise<*>>` A list of items which may or may not be Promises.
+- `list` `Array|Promise<Array>` A list of items which may or may not be Promises.
 
 List manipulations happen using an internal pipeline. These pipelines may be pre-built and applied to lists later.
 

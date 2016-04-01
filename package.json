@@ -1,7 +1,7 @@
 {
   "name": "list-promise",
   "version": "1.1.1",
-  "description": "Maximally-concurrent Promise-based array manipulation.",
+  "description": "Maximally-concurrent Promise-aware array iteration.",
   "main": "lib/list-promise.js",
   "scripts": {
     "coveralls": "nyc report -r text-lcov | coveralls",
