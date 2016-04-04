@@ -39,7 +39,7 @@ bundler
 
 - `list` `Array|Promise<Array>` A list of items which may or may not be Promises.
 
-Creates a promise with `map`, `reduce`, and `filter` methods that can be used to iterate over list items as they are resolved.
+Creates a promise with `map`, `filter`, and `reduce` methods that can be used to iterate over list items as they are resolved.
 
 ### ListPromise
 
