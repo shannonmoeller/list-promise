@@ -14,7 +14,7 @@ Maximally-concurrent Promise-aware array iteration.
 import list from 'list-promise';
 import fs from 'fs-promise';
 
-// Manipulate a given array
+// Iterate a given array
 list(['src/foo.js', 'src/bar.js'])
     .map(path => fs.readFile(path, 'utf8'))
     .map(file => file.split('').reverse().join(''))
