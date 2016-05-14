@@ -17,19 +17,10 @@ import fs from 'fs-promise';
 // Iterate a given array
 list(['src/foo.js', 'src/bar.js'])
     .map(path => fs.readFile(path, 'utf8'))
-    .map(file => file.split('').reverse().join(''))
+    .map(file => file.split('').reverse())
+    .concat()
+    .filter(file => file.length > 0)
     .reduce((bundle, file) => bundle + file, '')
-    .then(bundle => fs.writeFile('bundle.js', bundle));
-
-// Or, pre-build the array iteration pipeline
-const bundler = list()
-    .map(path => fs.readFile(path, 'utf8'))
-    .map(file => file.split('').reverse().join(''))
-    .reduce((bundle, file) => bundle + file, '')
-
-// To resolve later
-bundler
-    .resolve(['src/foo.js', 'src/bar.js'])
     .then(bundle => fs.writeFile('bundle.js', bundle));
 ```
 
@@ -49,6 +40,10 @@ Creates a promise with `map`, `filter`, and `reduce` methods that can be used to
 
 Creates a new `ListPromise` for the results of mapping a list with a given map function.
 
+#### .concat(): ListPromise
+
+Flattens a list of lists into a single list.
+
 #### .filter(fn): ListPromise
 
 - `fn` `Function(item, i, items) : context` Filter callback.
@@ -61,14 +56,6 @@ Creates a new `ListPromise` for the results of filtering a list with a given fil
 - `initialValue` `*` (default: `undefined`) Initial value to pass to the reducer.
 
 Creates a new `ListPromise` for the result of reducing a list with a given reducer function. If the reduction results in an array, that array may then be iterated.
-
-#### .resolve(list): ListPromise
-
-- `list` `Array|Promise<Array>` A list of items which may or may not be Promises.
-
-List manipulations happen using an internal pipeline. These pipelines may be pre-built and applied to lists later.
-
-**Note:** Initial values given to `.reduce()` will be shared between every call to `.resolve()`. If the initial value is an object or array, this could have undesired effects. You'll likely want to clone the initial value in the reduce function.
 
 ## Contribute
 

@@ -1,48 +1,55 @@
 import test from 'ava';
 import listPromise from '../src/list-promise';
-import { delay } from './helpers/delay';
+import delay from './helpers/delay';
 
-function testReduce(actual, assert) {
-	const expected = 10;
+async function testReduce(actual, t) {
+	const expected = [
+		{ a: 1 },
+		{ b: 2 },
+		{ c: 3 }
+	];
 
-	return listPromise(actual)
-		.reduce((x, y) => x.concat({ ab: y.a + y.b }), [])
-		.reduce((x, y) => delay(x + y.ab), 0)
-		.then(result => assert.same(result, expected));
+	const items = await listPromise(actual);
+
+	t.same(items, expected);
 }
 
-test('list of values', async assert => {
+test('TODO - list of items', async t => {
 	const actual = [
-		{ a: 1, b: 2 },
-		{ a: 3, b: 4 }
+		{ a: 1 },
+		{ b: 2 },
+		{ c: 3 }
 	];
 
-	return testReduce(actual, assert);
+	return testReduce(actual, t);
 });
 
-test('list of promised values', async assert => {
+test('TODO - list of promised items', async t => {
 	const actual = [
-		delay({ a: 1, b: 2 }, 200),
-		delay({ a: 3, b: 4 })
+		delay({ a: 1 }),
+		delay({ b: 2 }),
+		delay({ c: 3 })
 	];
 
-	return testReduce(actual, assert);
+	return testReduce(actual, t);
 });
 
-test('promised list of values', async assert => {
-	const actual = Promise.all([
-		{ a: 1, b: 2 },
-		{ a: 3, b: 4 }
+test('TODO - promised list of items', async t => {
+	const actual = delay([
+		{ a: 1 },
+		{ b: 2 },
+		{ c: 3 }
 	]);
 
-	return testReduce(actual, assert);
+	return testReduce(actual, t);
 });
 
-test('promised list of promised values', async assert => {
-	const actual = Promise.all([
-		delay({ a: 1, b: 2 }, 200),
-		delay({ a: 3, b: 4 })
+test('TODO - promised list of promised items', async t => {
+	const actual = delay([
+		delay({ a: 1 }),
+		delay({ b: 2 }),
+		delay({ c: 3 })
 	]);
 
-	return testReduce(actual, assert);
+	return testReduce(actual, t);
 });

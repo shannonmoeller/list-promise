@@ -2,29 +2,24 @@ import test from 'ava';
 import listPromise from '../src/list-promise';
 import delay from './helpers/delay';
 
-async function testMap(actual, t) {
+async function testConcat(actual, t) {
 	const expected = [
-		{ a: 1, d: 4, e: 5, f: 6 },
-		{ b: 2, d: 4, e: 5, f: 6 },
-		{ c: 3, d: 4, e: 5, f: 6 }
+		{ a: 1 }, { e: 5 }, ['d', 4], { e: 5 },
+		{ b: 2 }, { e: 5 }, ['d', 4], { e: 5 },
+		{ c: 3 }, { e: 5 }, ['d', 4], { e: 5 }
 	];
 
 	const items = await listPromise(actual)
-		.map(async item => {
-			item.d = 4;
-
-			return item;
-		})
-		.map(async item => {
-			item.e = await 5;
-
-			return item;
-		})
-		.map(delay(async item => {
-			item.f = 6;
-
-			return item;
-		}));
+		.map(item => [
+			item,
+			['d', 4]
+		])
+		.concat()
+		.map(async item => [
+			await item,
+			delay({ e: 5 })
+		])
+		.concat();
 
 	t.same(items, expected);
 }
@@ -36,7 +31,7 @@ test('list of items', async t => {
 		{ c: 3 }
 	];
 
-	return testMap(actual, t);
+	return testConcat(actual, t);
 });
 
 test('list of promised items', async t => {
@@ -46,7 +41,7 @@ test('list of promised items', async t => {
 		delay({ c: 3 })
 	];
 
-	return testMap(actual, t);
+	return testConcat(actual, t);
 });
 
 test('promised list of items', async t => {
@@ -56,7 +51,7 @@ test('promised list of items', async t => {
 		{ c: 3 }
 	]);
 
-	return testMap(actual, t);
+	return testConcat(actual, t);
 });
 
 test('promised list of promised items', async t => {
@@ -66,5 +61,5 @@ test('promised list of promised items', async t => {
 		delay({ c: 3 })
 	]);
 
-	return testMap(actual, t);
+	return testConcat(actual, t);
 });

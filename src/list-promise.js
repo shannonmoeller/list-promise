@@ -1,87 +1,75 @@
-async function deepResolve(value) {
-	value = await value;
+const concat = Array.prototype.concat;
 
-	return Array.isArray(value)
-		? Promise.all(value)
-		: value;
+function shallowResolve(value) {
+	return value
+		&& value.shallowPromise
+		|| Promise.resolve(value);
 }
 
-async function applyAction(list, { type, fn, init }) {
-	list = await list;
+function deepResolve(value) {
+	return shallowResolve(value)
+		.then(val => Array.isArray(val)
+			? Promise.all(val)
+			: val
+		);
+}
 
-	async function asyncMap(item, i) {
-		return fn(await item, i, list);
-	}
+export default function listPromise(items) {
+	const shallowPromise = shallowResolve(items);
+	const deepPromise = deepResolve(items);
 
-	async function asyncReduce(prev, item, i) {
-		return fn(await prev, await item, i, list);
-	}
+	return Object.assign(deepPromise, {
+		shallowPromise,
 
-	async function asyncFilter(prev, item, i) {
-		prev = await prev;
-		item = await item;
+		concat() {
+			async function asyncConcat(prev, item) {
+				return concat.call(prev, item);
+			}
 
-		if (await fn(item, i, list)) {
-			prev.push(item);
+			return deepPromise.reduce(asyncConcat, []);
+		},
+
+		filter(filterer) {
+			async function asyncFilter(prev, item, i) {
+				filterer = await filterer;
+
+				if (await filterer(item, i)) {
+					return concat.call(prev, item);
+				}
+
+				return prev;
+			}
+
+			return deepPromise.reduce(asyncFilter, []);
+		},
+
+		map(mapper) {
+			async function asyncMap(item, i) {
+				mapper = await mapper;
+				item = await item;
+
+				return mapper(item, i, items);
+			}
+
+			const localPromise = shallowPromise
+				.then(items => items.map(asyncMap));
+
+			return listPromise(localPromise);
+		},
+
+		reduce(reducer, init) {
+			async function asyncReduce(prev, item, i) {
+				reducer = await reducer;
+				prev = await prev;
+				item = await item;
+
+				return reducer(prev, item, i);
+			}
+
+			const localPromise = deepPromise
+				.then(items => items.reduce(asyncReduce, init));
+
+			return listPromise(localPromise);
 		}
-
-		return prev;
-	}
-
-	switch (type) {
-		case 'map':
-			return list.map(asyncMap);
-
-		case 'reduce':
-			return list.reduce(asyncReduce, init);
-
-		case 'filter':
-			return list.reduce(asyncFilter, []);
-
-		default:
-			return list;
-	}
-}
-
-async function applyActions(list, actions) {
-	list = await list;
-
-	return actions.reduce(applyAction, list);
-}
-
-/**
- * @method listPromise
- * @param {Array|Promise<Array>}
- * @return {Promise}
- */
-export default function listPromise(list) {
-	const actions = [];
-	const methods = {
-		map(fn) {
-			actions.push({ type: 'map', fn });
-
-			return this;
-		},
-
-		reduce(fn, init) {
-			actions.push({ type: 'reduce', fn, init });
-
-			return this;
-		},
-
-		filter(fn) {
-			actions.push({ type: 'filter', fn });
-
-			return this;
-		},
-
-		resolve(list = []) {
-			const promise = applyActions(list, actions)
-				.then(deepResolve);
-
-			return Object.assign(promise, methods);
-		}
-	};
-
-	return methods.resolve(list);
+	});
 }

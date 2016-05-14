@@ -1,59 +1,65 @@
 import test from 'ava';
 import listPromise from '../src/list-promise';
-import { delay } from './helpers/delay';
+import delay from './helpers/delay';
 
-function testFilter(actual, assert) {
+async function testFilter(actual, t) {
 	const expected = [
-		{ a: 5, b: 6 }
+		{ a: 2 },
+		{ a: 4 }
 	];
 
-	return listPromise(actual)
+	const items = await listPromise(actual)
 		.filter(item => item.a > 1)
-		.filter(item => delay(item.b < 8))
-		.filter(async item => item.b > await delay(4))
-		.then(result => assert.same(result, expected));
+		.filter(async item => await item.a < 5)
+		.filter(delay(item => !item.b));
+
+	t.same(items, expected);
 }
 
-test('list of values', async assert => {
+test('list of items', async t => {
 	const actual = [
-		{ a: 1, b: 2 },
-		{ a: 3, b: 4 },
-		{ a: 5, b: 6 },
-		{ a: 7, b: 8 }
+		{ a: 1 },
+		{ a: 2 },
+		{ a: 3, b: 1 },
+		{ a: 4 },
+		{ a: 5 }
 	];
 
-	return testFilter(actual, assert);
+	return testFilter(actual, t);
 });
 
-test('list of promised values', async assert => {
+test('list of promised items', async t => {
 	const actual = [
-		delay({ a: 1, b: 2 }, 300),
-		delay({ a: 3, b: 4 }),
-		delay({ a: 5, b: 6 }, 200),
-		delay({ a: 7, b: 8 })
+		delay({ a: 1 }),
+		delay({ a: 2 }),
+		delay({ a: 3, b: 1 }),
+		delay({ a: 4 }),
+		delay({ a: 5 })
 	];
 
-	return testFilter(actual, assert);
+	return testFilter(actual, t);
 });
 
-test('promised list of values', async assert => {
-	const actual = Promise.all([
-		{ a: 1, b: 2 },
-		{ a: 3, b: 4 },
-		{ a: 5, b: 6 },
-		{ a: 7, b: 8 }
+test('promised list of items', async t => {
+	const actual = delay([
+		{ a: 1 },
+		{ a: 2 },
+		{ a: 3, b: 1 },
+		{ a: 4 },
+		{ a: 5 }
 	]);
 
-	return testFilter(actual, assert);
+	return testFilter(actual, t);
 });
 
-test('promised list of promised values', async assert => {
-	const actual = Promise.all([
-		delay({ a: 1, b: 2 }, 300),
-		delay({ a: 3, b: 4 }),
-		delay({ a: 5, b: 6 }, 200),
-		delay({ a: 7, b: 8 })
+test('promised list of promised items', async t => {
+	const actual = delay([
+		delay({ a: 1 }),
+		delay({ a: 2 }),
+		delay({ a: 3, b: 1 }),
+		delay({ a: 4 }),
+		delay({ a: 5 })
 	]);
 
-	return testFilter(actual, assert);
+	return testFilter(actual, t);
 });
