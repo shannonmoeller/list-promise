@@ -19,8 +19,6 @@ export default function listPromise(items) {
 	const deepPromise = deepResolve(items);
 
 	return Object.assign(deepPromise, {
-		shallowPromise,
-
 		concat() {
 			async function asyncConcat(prev, item) {
 				return concat.call(prev, item);
