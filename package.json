@@ -2,30 +2,26 @@
   "name": "list-promise",
   "version": "2.0.0",
   "description": "Maximally-concurrent Promise-aware array iteration.",
-  "main": "lib/list-promise.js",
-  "scripts": {
-    "coveralls": "nyc report -r text-lcov | coveralls",
-    "build": "rimraf lib && babel src --out-dir lib",
-    "prepublish": "npm test && npm run build",
-    "pretest": "xo {src,test}/**/*.js",
-    "test": "nyc ava -v",
-    "posttest": "nyc report -r lcov",
-    "watch": "chokidar '{src,test}/**/*.js' -c 'npm test'"
-  },
+  "license": "MIT",
   "repository": "shannonmoeller/list-promise",
   "keywords": [],
-  "author": "Shannon Moeller <me@shannonmoeller.com> (http://shannonmoeller.com)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/shannonmoeller/list-promise/issues"
-  },
   "homepage": "https://github.com/shannonmoeller/list-promise",
+  "author": {
+    "name": "Shannon Moeller",
+    "email": "me@shannonmoeller.com",
+    "url": "http://shannonmoeller.com"
+  },
+  "main": "dist/list-promise.js",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "babel-runtime": "^6.6.1"
   },
   "devDependencies": {
     "ava": "^0.13.0",
     "babel-cli": "^6.6.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-runtime": "^6.8.0",
     "babel-polyfill": "^6.7.4",
     "babel-preset-es2015": "^6.6.0",
@@ -37,6 +33,15 @@
     "rimraf": "^2.5.2",
     "xo": "^0.13.0"
   },
+  "scripts": {
+    "coveralls": "nyc report -r text-lcov | coveralls",
+    "build": "rimraf dist && babel src --out-dir dist",
+    "prepublish": "npm test && npm run build",
+    "pretest": "xo {src,test}/**/*.js",
+    "test": "nyc ava -v",
+    "posttest": "nyc report -r lcov",
+    "watch": "chokidar '{src,test}/**/*.js' -c 'npm test'"
+  },
   "engines": {
     "node": ">= 0.12"
   },
@@ -46,6 +51,7 @@
       "stage-2"
     ],
     "plugins": [
+      "add-module-exports",
       "transform-runtime"
     ]
   },
