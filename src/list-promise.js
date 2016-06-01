@@ -21,18 +21,27 @@ export default function listPromise(items) {
 	return Object.assign(deepPromise, {
 		concat() {
 			async function asyncConcat(prev, item) {
+				item = await item;
+
 				return concat.call(prev, item);
 			}
 
 			return deepPromise.reduce(asyncConcat, []);
 		},
 
+		concatMap(mapper) {
+			return deepPromise
+				.map(mapper)
+				.concat();
+		},
+
 		filter(filterer) {
 			async function asyncFilter(prev, item, i) {
 				filterer = await filterer;
+				item = await item;
 
 				if (await filterer(item, i)) {
-					return concat.call(prev, item);
+					prev.push(item);
 				}
 
 				return prev;
@@ -46,11 +55,11 @@ export default function listPromise(items) {
 				mapper = await mapper;
 				item = await item;
 
-				return mapper(item, i, items);
+				return mapper(item, i);
 			}
 
 			const localPromise = shallowPromise
-				.then(items => items.map(asyncMap));
+				.then(x => x.map(asyncMap));
 
 			return listPromise(localPromise);
 		},
@@ -65,7 +74,7 @@ export default function listPromise(items) {
 			}
 
 			const localPromise = deepPromise
-				.then(items => items.reduce(asyncReduce, init));
+				.then(x => x.reduce(asyncReduce, init));
 
 			return listPromise(localPromise);
 		}
