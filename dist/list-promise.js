@@ -41,8 +41,6 @@ function listPromise(items) {
 	var deepPromise = deepResolve(items);
 
 	return (0, _assign2.default)(deepPromise, {
-		shallowPromise: shallowPromise,
-
 		concat: function concat() {
 			var asyncConcat = function () {
 				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(prev, item) {
@@ -50,9 +48,14 @@ function listPromise(items) {
 						while (1) {
 							switch (_context.prev = _context.next) {
 								case 0:
+									_context.next = 2;
+									return item;
+
+								case 2:
+									item = _context.sent;
 									return _context.abrupt("return", _concat.call(prev, item));
 
-								case 1:
+								case 4:
 								case "end":
 									return _context.stop();
 							}
@@ -65,6 +68,9 @@ function listPromise(items) {
 			}();
 
 			return deepPromise.reduce(asyncConcat, []);
+		},
+		concatMap: function concatMap(mapper) {
+			return deepPromise.map(mapper).concat();
 		},
 		filter: function filter(filterer) {
 			var asyncFilter = function () {
@@ -79,20 +85,25 @@ function listPromise(items) {
 								case 2:
 									filterer = _context2.sent;
 									_context2.next = 5;
-									return filterer(item, i);
+									return item;
 
 								case 5:
+									item = _context2.sent;
+									_context2.next = 8;
+									return filterer(item, i);
+
+								case 8:
 									if (!_context2.sent) {
-										_context2.next = 7;
+										_context2.next = 10;
 										break;
 									}
 
-									return _context2.abrupt("return", _concat.call(prev, item));
+									prev.push(item);
 
-								case 7:
+								case 10:
 									return _context2.abrupt("return", prev);
 
-								case 8:
+								case 11:
 								case "end":
 									return _context2.stop();
 							}
@@ -123,7 +134,7 @@ function listPromise(items) {
 
 								case 5:
 									item = _context3.sent;
-									return _context3.abrupt("return", mapper(item, i, items));
+									return _context3.abrupt("return", mapper(item, i));
 
 								case 7:
 								case "end":
@@ -137,8 +148,8 @@ function listPromise(items) {
 				};
 			}();
 
-			var localPromise = shallowPromise.then(function (items) {
-				return items.map(asyncMap);
+			var localPromise = shallowPromise.then(function (x) {
+				return x.map(asyncMap);
 			});
 
 			return listPromise(localPromise);
@@ -179,8 +190,8 @@ function listPromise(items) {
 				};
 			}();
 
-			var localPromise = deepPromise.then(function (items) {
-				return items.reduce(asyncReduce, init);
+			var localPromise = deepPromise.then(function (x) {
+				return x.reduce(asyncReduce, init);
 			});
 
 			return listPromise(localPromise);
