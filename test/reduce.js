@@ -1,4 +1,4 @@
-import test from 'ava';
+import test from 'blue-tape';
 import listPromise from '../src/list-promise';
 import delay from './helpers/delay';
 
