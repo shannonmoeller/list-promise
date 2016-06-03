@@ -26,7 +26,7 @@ async function testMap(actual, t) {
 			return item;
 		}));
 
-	t.same(items, expected);
+	t.deepEqual(items, expected);
 }
 
 test('list of items', async t => {

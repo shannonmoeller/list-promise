@@ -19,7 +19,7 @@ async function testConcatMap(actual, t) {
 			delay({ e: 5 })
 		]);
 
-	t.same(items, expected);
+	t.deepEqual(items, expected);
 }
 
 test('list of items', async t => {

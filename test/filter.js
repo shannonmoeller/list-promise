@@ -13,7 +13,7 @@ async function testFilter(actual, t) {
 		.filter(async item => await item.a < 5)
 		.filter(delay(item => !item.b));
 
-	t.same(items, expected);
+	t.deepEqual(items, expected);
 }
 
 test('list of items', async t => {

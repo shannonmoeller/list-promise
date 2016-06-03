@@ -10,7 +10,7 @@ async function testReduce(actual, t) {
 			return { ...prev, ...item };
 		}));
 
-	t.same(items, expected);
+	t.deepEqual(items, expected);
 }
 
 test('list of items', async t => {
