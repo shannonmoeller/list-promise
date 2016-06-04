@@ -20,7 +20,7 @@
   "devDependencies": {
     "blue-tape": "^0.2.0",
     "coveralls": "^2.11.9",
-    "esprev": "^3.0.0",
+    "esprev": "^3.1.1",
     "nyc": "^6.4.4",
     "rimraf": "^2.5.2",
     "tap-difflet": "^0.4.0"
