@@ -36,23 +36,36 @@ Creates a promise with `map`, `filter`, and `reduce` methods that can be used to
 
 #### .map(fn): ListPromise
 
-- `fn` `Function(item, i, items) : item` Map callback.
+- `fn` `Function(item, i) : item` Map callback.
 
 Creates a new `ListPromise` for the results of mapping a list with a given map function.
+
+#### .mapProp(key, fn): ListPromise
+
+- `key` `String|Number` Key of property to modify.
+- `fn` `Function(propery, i, item) : item` Map callback.
+
+Creates a new `ListPromise` for the results of mapping properties of items in a list with a given map function.
 
 #### .concat(): ListPromise
 
 Flattens a list of lists into a single list.
 
+#### .concatMap(fn): ListPromise
+
+- `fn` `Function(item, i) : item` Map callback.
+
+Convenience shorthand for `.map(fn).concat()`.
+
 #### .filter(fn): ListPromise
 
-- `fn` `Function(item, i, items) : context` Filter callback.
+- `fn` `Function(item, i) : context` Filter callback.
 
 Creates a new `ListPromise` for the results of filtering a list with a given filter function.
 
 #### .reduce(fn, [initialValue]): ListPromise
 
-- `fn` `Function(context, item, i, items) : context` Reduce callback.
+- `fn` `Function(context, item, i) : context` Reduce callback.
 - `initialValue` `*` (default: `undefined`) Initial value to pass to the reducer.
 
 Creates a new `ListPromise` for the result of reducing a list with a given reducer function. If the reduction results in an array, that array may then be iterated.
