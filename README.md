@@ -43,9 +43,16 @@ Creates a new `ListPromise` for the results of mapping a list with a given map f
 #### .mapProp(key, fn): ListPromise
 
 - `key` `String|Number` Key of property to modify.
-- `fn` `Function(propery, i, item) : item` Map callback.
+- `fn` `Function(property, i, item) : item` Map callback.
 
-Creates a new `ListPromise` for the results of mapping properties of items in a list with a given map function.
+Creates a new `ListPromise` for the results of mapping a list of items' properties with a given map function.
+
+```js
+list([{ foo: 'a' }, { foo: 'b' }])
+    .mapProp('foo', x => x.toUpperCase());
+    .then(x => console.log(x));
+    // -> [{ foo: 'A' }, { foo: 'B' }]
+```
 
 #### .concat(): ListPromise
 
