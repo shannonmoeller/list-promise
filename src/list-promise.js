@@ -64,6 +64,24 @@ export default function listPromise(items) {
 			return listPromise(localPromise);
 		},
 
+		mapProp(prop, mapper) {
+			async function asyncMapProp(item, i) {
+				mapper = await mapper;
+				item = await item;
+
+				if (item && prop in item) {
+					const subItem = await item[prop];
+
+					item[prop] = await mapper(subItem, i, item);
+				}
+
+				return item;
+			}
+
+			return deepPromise
+				.map(asyncMapProp);
+		},
+
 		reduce(reducer, init) {
 			async function asyncReduce(prev, item, i) {
 				reducer = await reducer;

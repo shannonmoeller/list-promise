@@ -4,35 +4,23 @@ import delay from './helpers/delay';
 
 async function testMap(actual, t) {
 	const expected = [
-		{ a: 1, d: 4, e: 5, f: 6 },
-		{ b: 2, d: 4, e: 5, f: 6 },
-		{ c: 3, d: 4, e: 5, f: 6 }
+		{ a: 1, foo: 4 },
+		{ b: 2, foo: 5 },
+		{ c: 3 }
 	];
 
 	const items = await listPromise(actual)
-		.map(item => {
-			item.d = 4;
-
-			return item;
-		})
-		.map(async item => {
-			item.e = await 5;
-
-			return item;
-		})
-		.map(delay(async item => {
-			item.f = 6;
-
-			return item;
-		}));
+		.mapProp('foo', foo => foo + 1)
+		.mapProp('foo', async foo => foo + 1)
+		.mapProp('foo', delay(async foo => foo + 1));
 
 	t.deepEqual(items, expected);
 }
 
 test('list of items', async t => {
 	const actual = [
-		{ a: 1 },
-		{ b: 2 },
+		{ a: 1, foo: 1 },
+		{ b: 2, foo: 2 },
 		{ c: 3 }
 	];
 
@@ -41,8 +29,8 @@ test('list of items', async t => {
 
 test('list of promised items', async t => {
 	const actual = [
-		delay({ a: 1 }),
-		delay({ b: 2 }),
+		delay({ a: 1, foo: 1 }),
+		delay({ b: 2, foo: 2 }),
 		delay({ c: 3 })
 	];
 
@@ -51,8 +39,8 @@ test('list of promised items', async t => {
 
 test('promised list of items', async t => {
 	const actual = delay([
-		{ a: 1 },
-		{ b: 2 },
+		{ a: 1, foo: 1 },
+		{ b: 2, foo: 2 },
 		{ c: 3 }
 	]);
 
@@ -61,8 +49,8 @@ test('promised list of items', async t => {
 
 test('promised list of promised items', async t => {
 	const actual = delay([
-		delay({ a: 1 }),
-		delay({ b: 2 }),
+		delay({ a: 1, foo: 1 }),
+		delay({ b: 2, foo: delay(2) }),
 		delay({ c: 3 })
 	]);
 
