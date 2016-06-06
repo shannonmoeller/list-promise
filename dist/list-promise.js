@@ -154,38 +154,90 @@ function listPromise(items) {
 
 			return listPromise(localPromise);
 		},
-		reduce: function reduce(reducer, init) {
-			var asyncReduce = function () {
-				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(prev, item, i) {
+		mapProp: function mapProp(prop, mapper) {
+			var asyncMapProp = function () {
+				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(item, i) {
+					var subItem;
 					return _regenerator2.default.wrap(function _callee4$(_context4) {
 						while (1) {
 							switch (_context4.prev = _context4.next) {
 								case 0:
 									_context4.next = 2;
-									return reducer;
+									return mapper;
 
 								case 2:
-									reducer = _context4.sent;
+									mapper = _context4.sent;
 									_context4.next = 5;
-									return prev;
-
-								case 5:
-									prev = _context4.sent;
-									_context4.next = 8;
 									return item;
 
-								case 8:
+								case 5:
 									item = _context4.sent;
-									return _context4.abrupt("return", reducer(prev, item, i));
 
-								case 10:
+									if (!(item && prop in item)) {
+										_context4.next = 13;
+										break;
+									}
+
+									_context4.next = 9;
+									return item[prop];
+
+								case 9:
+									subItem = _context4.sent;
+									_context4.next = 12;
+									return mapper(subItem, i, item);
+
+								case 12:
+									item[prop] = _context4.sent;
+
+								case 13:
+									return _context4.abrupt("return", item);
+
+								case 14:
 								case "end":
 									return _context4.stop();
 							}
 						}
 					}, _callee4, this);
 				}));
-				return function asyncReduce(_x8, _x9, _x10) {
+				return function asyncMapProp(_x8, _x9) {
+					return ref.apply(this, arguments);
+				};
+			}();
+
+			return deepPromise.map(asyncMapProp);
+		},
+		reduce: function reduce(reducer, init) {
+			var asyncReduce = function () {
+				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(prev, item, i) {
+					return _regenerator2.default.wrap(function _callee5$(_context5) {
+						while (1) {
+							switch (_context5.prev = _context5.next) {
+								case 0:
+									_context5.next = 2;
+									return reducer;
+
+								case 2:
+									reducer = _context5.sent;
+									_context5.next = 5;
+									return prev;
+
+								case 5:
+									prev = _context5.sent;
+									_context5.next = 8;
+									return item;
+
+								case 8:
+									item = _context5.sent;
+									return _context5.abrupt("return", reducer(prev, item, i));
+
+								case 10:
+								case "end":
+									return _context5.stop();
+							}
+						}
+					}, _callee5, this);
+				}));
+				return function asyncReduce(_x10, _x11, _x12) {
 					return ref.apply(this, arguments);
 				};
 			}();
