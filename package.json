@@ -15,18 +15,18 @@
     "dist"
   ],
   "dependencies": {
-    "babel-runtime": "^6.9.2"
+    "babel-runtime": "^6.11.6"
   },
   "devDependencies": {
     "esprev": "^3.1.1",
-    "rimraf": "^2.5.2",
-    "whim": "^3.0.6"
+    "rimraf": "^2.5.4",
+    "whim": "^4.1.3"
   },
   "scripts": {
-    "coveralls": "whim test report",
     "prepublish": "rimraf dist && esprev src --out-dir dist",
     "pretest": "whim lint",
-    "test": "whim test"
+    "test": "whim test",
+    "report": "whim test report"
   },
   "engines": {
     "node": ">= 0.12"
