@@ -20,7 +20,7 @@
   "devDependencies": {
     "esprev": "^3.1.1",
     "rimraf": "^2.5.2",
-    "whim": "^3.0.6"
+    "whim": "^4.1.2"
   },
   "scripts": {
     "coveralls": "whim test report",
