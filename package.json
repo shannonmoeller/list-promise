@@ -2,6 +2,7 @@
   "name": "list-promise",
   "version": "2.1.2",
   "description": "Maximally-concurrent Promise-aware array iteration.",
+  "keywords": [],
   "license": "MIT",
   "repository": "shannonmoeller/list-promise",
   "homepage": "https://github.com/shannonmoeller/list-promise#readme",
@@ -18,17 +19,50 @@
     "babel-runtime": "^6.11.6"
   },
   "devDependencies": {
-    "esprev": "^3.1.1",
+    "ava": "^0.19.1",
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-register": "^6.24.1",
+    "coveralls": "^2.13.0",
+    "nyc": "^10.2.2",
     "rimraf": "^2.5.4",
-    "whim": "^4.1.3"
+    "xo": "^0.18.1"
   },
   "scripts": {
-    "prepublish": "rimraf dist && esprev src --out-dir dist",
-    "pretest": "whim lint",
-    "test": "whim test",
-    "report": "whim test report"
+    "prepublish": "rimraf dist && babel src --out-dir dist",
+    "report": "nyc report -r text-lcov | coveralls",
+    "test": "xo && nyc ava"
+  },
+  "ava": {
+    "babel": "inherit",
+    "require": [
+      "babel-register"
+    ]
+  },
+  "babel": {
+    "plugins": [
+      "transform-object-rest-spread",
+      "transform-runtime"
+    ],
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": 4
+          }
+        }
+      ]
+    ]
+  },
+  "xo": {
+    "rules": {
+      "ava/no-async-fn-without-await": "off"
+    }
   },
   "engines": {
-    "node": ">= 0.12"
+    "node": ">= 4"
   }
 }

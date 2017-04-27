@@ -77,6 +77,23 @@ Creates a new `ListPromise` for the results of filtering a list with a given fil
 
 Creates a new `ListPromise` for the result of reducing a list with a given reducer function. If the reduction results in an array, that array may then be iterated.
 
+#### .reverse(): ListPromise
+
+Creates a new `ListPromise` for the result of reversing the list.
+
+#### .sortBy(fn): ListPromise
+
+- `fn` `Function(item, i) : any` Sort value getter.
+
+Creates a new `ListPromise` for the result of sorting a list with a property getter function.
+
+```js
+list([{ foo: '3' }, { foo: '1' }, { foo: '2' }])
+    .sortBy(x => x.foo);
+    .then(x => console.log(x));
+    // -> [{ foo: '1' }, { foo: '2' }, { foo: '3' }]
+```
+
 ## Contribute
 
 Standards for this project, including tests, code coverage, and semantics are enforced with a build tool. Pull requests must include passing tests with 100% code coverage and no linting errors.

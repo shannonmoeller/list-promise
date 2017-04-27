@@ -1,16 +1,15 @@
 const concat = Array.prototype.concat;
 
 function shallowResolve(value) {
-	return value
-		&& value.shallowPromise
-		|| Promise.resolve(value);
+	return (value && value.shallowPromise) ||
+		Promise.resolve(value);
 }
 
 function deepResolve(value) {
 	return shallowResolve(value)
-		.then(val => Array.isArray(val)
-			? Promise.all(val)
-			: val
+		.then(val => Array.isArray(val) ?
+			Promise.all(val) :
+			val
 		);
 }
 
@@ -26,7 +25,8 @@ export default function listPromise(items) {
 				return concat.call(prev, item);
 			}
 
-			return deepPromise.reduce(asyncConcat, []);
+			return deepPromise
+				.reduce(asyncConcat, []);
 		},
 
 		concatMap(mapper) {
@@ -47,7 +47,8 @@ export default function listPromise(items) {
 				return prev;
 			}
 
-			return deepPromise.reduce(asyncFilter, []);
+			return deepPromise
+				.reduce(asyncFilter, []);
 		},
 
 		map(mapper) {
@@ -93,6 +94,46 @@ export default function listPromise(items) {
 
 			const localPromise = deepPromise
 				.then(x => x.reduce(asyncReduce, init));
+
+			return listPromise(localPromise);
+		},
+
+		reverse() {
+			const localPromise = shallowPromise
+				.then(x => x.slice().reverse());
+
+			return listPromise(localPromise);
+		},
+
+		sortBy(sorter) {
+			async function asyncSortBy(item, i) {
+				sorter = await sorter;
+
+				const value = await item;
+				const sortValue = await sorter(value, i);
+
+				return {value, sortValue};
+			}
+
+			function sortBySortValue(a, b) {
+				const aSortValue = a.sortValue;
+				const bSortValue = b.sortValue;
+
+				if (aSortValue < bSortValue) {
+					return -1;
+				}
+
+				if (aSortValue > bSortValue) {
+					return 1;
+				}
+
+				return 0;
+			}
+
+			const localPromise = deepPromise
+				.map(asyncSortBy)
+				.then(list => list.sort(sortBySortValue))
+				.then(list => list.map(item => item.value));
 
 			return listPromise(localPromise);
 		}

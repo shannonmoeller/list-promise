@@ -24,7 +24,7 @@ exports.default = listPromise;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _concat = Array.prototype.concat;
+var concat = Array.prototype.concat;
 
 function shallowResolve(value) {
 	return value && value.shallowPromise || _promise2.default.resolve(value);
@@ -41,9 +41,9 @@ function listPromise(items) {
 	var deepPromise = deepResolve(items);
 
 	return (0, _assign2.default)(deepPromise, {
-		concat: function concat() {
+		concat() {
 			var asyncConcat = function () {
-				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(prev, item) {
+				var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(prev, item) {
 					return _regenerator2.default.wrap(function _callee$(_context) {
 						while (1) {
 							switch (_context.prev = _context.next) {
@@ -53,7 +53,7 @@ function listPromise(items) {
 
 								case 2:
 									item = _context.sent;
-									return _context.abrupt("return", _concat.call(prev, item));
+									return _context.abrupt("return", concat.call(prev, item));
 
 								case 4:
 								case "end":
@@ -62,19 +62,22 @@ function listPromise(items) {
 						}
 					}, _callee, this);
 				}));
+
 				return function asyncConcat(_x, _x2) {
-					return ref.apply(this, arguments);
+					return _ref.apply(this, arguments);
 				};
 			}();
 
 			return deepPromise.reduce(asyncConcat, []);
 		},
-		concatMap: function concatMap(mapper) {
+
+		concatMap(mapper) {
 			return deepPromise.map(mapper).concat();
 		},
-		filter: function filter(filterer) {
+
+		filter(filterer) {
 			var asyncFilter = function () {
-				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(prev, item, i) {
+				var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(prev, item, i) {
 					return _regenerator2.default.wrap(function _callee2$(_context2) {
 						while (1) {
 							switch (_context2.prev = _context2.next) {
@@ -110,16 +113,18 @@ function listPromise(items) {
 						}
 					}, _callee2, this);
 				}));
+
 				return function asyncFilter(_x3, _x4, _x5) {
-					return ref.apply(this, arguments);
+					return _ref2.apply(this, arguments);
 				};
 			}();
 
 			return deepPromise.reduce(asyncFilter, []);
 		},
-		map: function map(mapper) {
+
+		map(mapper) {
 			var asyncMap = function () {
-				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(item, i) {
+				var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(item, i) {
 					return _regenerator2.default.wrap(function _callee3$(_context3) {
 						while (1) {
 							switch (_context3.prev = _context3.next) {
@@ -143,8 +148,9 @@ function listPromise(items) {
 						}
 					}, _callee3, this);
 				}));
+
 				return function asyncMap(_x6, _x7) {
-					return ref.apply(this, arguments);
+					return _ref3.apply(this, arguments);
 				};
 			}();
 
@@ -154,9 +160,10 @@ function listPromise(items) {
 
 			return listPromise(localPromise);
 		},
-		mapProp: function mapProp(prop, mapper) {
+
+		mapProp(prop, mapper) {
 			var asyncMapProp = function () {
-				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(item, i) {
+				var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(item, i) {
 					var subItem;
 					return _regenerator2.default.wrap(function _callee4$(_context4) {
 						while (1) {
@@ -199,16 +206,18 @@ function listPromise(items) {
 						}
 					}, _callee4, this);
 				}));
+
 				return function asyncMapProp(_x8, _x9) {
-					return ref.apply(this, arguments);
+					return _ref4.apply(this, arguments);
 				};
 			}();
 
 			return deepPromise.map(asyncMapProp);
 		},
-		reduce: function reduce(reducer, init) {
+
+		reduce(reducer, init) {
 			var asyncReduce = function () {
-				var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(prev, item, i) {
+				var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(prev, item, i) {
 					return _regenerator2.default.wrap(function _callee5$(_context5) {
 						while (1) {
 							switch (_context5.prev = _context5.next) {
@@ -237,8 +246,9 @@ function listPromise(items) {
 						}
 					}, _callee5, this);
 				}));
+
 				return function asyncReduce(_x10, _x11, _x12) {
-					return ref.apply(this, arguments);
+					return _ref5.apply(this, arguments);
 				};
 			}();
 
@@ -247,7 +257,78 @@ function listPromise(items) {
 			});
 
 			return listPromise(localPromise);
+		},
+
+		reverse() {
+			var localPromise = shallowPromise.then(function (x) {
+				return x.slice().reverse();
+			});
+
+			return listPromise(localPromise);
+		},
+
+		sortBy(sorter) {
+			var asyncSortBy = function () {
+				var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(item, i) {
+					var value, sortValue;
+					return _regenerator2.default.wrap(function _callee6$(_context6) {
+						while (1) {
+							switch (_context6.prev = _context6.next) {
+								case 0:
+									_context6.next = 2;
+									return sorter;
+
+								case 2:
+									sorter = _context6.sent;
+									_context6.next = 5;
+									return item;
+
+								case 5:
+									value = _context6.sent;
+									_context6.next = 8;
+									return sorter(value, i);
+
+								case 8:
+									sortValue = _context6.sent;
+									return _context6.abrupt("return", { value, sortValue });
+
+								case 10:
+								case "end":
+									return _context6.stop();
+							}
+						}
+					}, _callee6, this);
+				}));
+
+				return function asyncSortBy(_x13, _x14) {
+					return _ref6.apply(this, arguments);
+				};
+			}();
+
+			function sortBySortValue(a, b) {
+				var aSortValue = a.sortValue;
+				var bSortValue = b.sortValue;
+
+				if (aSortValue < bSortValue) {
+					return -1;
+				}
+
+				if (aSortValue > bSortValue) {
+					return 1;
+				}
+
+				return 0;
+			}
+
+			var localPromise = deepPromise.map(asyncSortBy).then(function (list) {
+				return list.sort(sortBySortValue);
+			}).then(function (list) {
+				return list.map(function (item) {
+					return item.value;
+				});
+			});
+
+			return listPromise(localPromise);
 		}
 	});
 }
-module.exports = exports["default"];
