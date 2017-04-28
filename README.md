@@ -2,7 +2,7 @@
 
 [![NPM version][npm-img]][npm-url] [![Downloads][downloads-img]][npm-url] [![Build Status][travis-img]][travis-url] [![Coverage Status][coveralls-img]][coveralls-url] [![Tip][amazon-img]][amazon-url]
 
-Maximally-concurrent Promise-aware array iteration.
+Maximally-concurrent Promise-aware array manipulation via `ListPromise`. They're like the plural form of a Promise or a finite Observable.
 
 ## Install
 
@@ -12,16 +12,34 @@ Maximally-concurrent Promise-aware array iteration.
 
 ```js
 import list from 'list-promise';
-import fs from 'fs-promise';
+import { readFile, writeFile } from 'fs-promise';
 
-// Iterate a given array
-list(['src/foo.js', 'src/bar.js'])
-    .map(path => fs.readFile(path, 'utf8'))
-    .map(file => file.split('').reverse())
+// Promisify an array.
+list(['src/foo.txt', 'src/bar.txt'])
+
+    // Read each file (callback returns a Promise).
+    .map((path) => readFile(path, 'utf8'))
+
+    // Chunk the characters of each file.
+    .map((file) => file.split(''))
+
+    // Merge the chunks into a single array.
     .concat()
-    .filter(file => file.length > 0)
+
+    // Remove empty chunks.
+    .filter((file) => file.length > 0)
+
+    // Sort the characters.
+    .sortBy((x) => x)
+
+    // Reverse the characters.
+    .reverse()
+
+    // Join chunks into a string.
     .reduce((bundle, file) => bundle + file, '')
-    .then(bundle => fs.writeFile('bundle.js', bundle));
+
+    // Write result to a new file.
+    .then((bundle) => writeFile('dist/bundle.txt', bundle));
 ```
 
 ## API
@@ -40,6 +58,13 @@ Creates a promise with `map`, `filter`, and `reduce` methods that can be used to
 
 Creates a new `ListPromise` for the results of mapping a list with a given map function.
 
+```js
+list(['a', 'b'])
+    .map((x) => x.toUpperCase());
+    .then(console.log);
+    // -> ['A', 'B']
+```
+
 #### .mapProp(key, fn): ListPromise
 
 - `key` `String|Number` Key of property to modify.
@@ -49,8 +74,8 @@ Creates a new `ListPromise` for the results of mapping a list of items' properti
 
 ```js
 list([{ foo: 'a' }, { foo: 'b' }])
-    .mapProp('foo', x => x.toUpperCase());
-    .then(x => console.log(x));
+    .mapProp('foo', (x) => x.toUpperCase());
+    .then(console.log);
     // -> [{ foo: 'A' }, { foo: 'B' }]
 ```
 
@@ -58,17 +83,38 @@ list([{ foo: 'a' }, { foo: 'b' }])
 
 Flattens a list of lists into a single list.
 
+```js
+list([['a'], ['b'], ['b', 'c']])
+    .concat();
+    .then(console.log);
+    // -> ['a', 'b', 'b', 'c']
+```
+
 #### .concatMap(fn): ListPromise
 
 - `fn` `Function(item, i) : item` Map callback.
 
 Convenience shorthand for `.map(fn).concat()`.
 
+```js
+list([{ foo: 'ab' }, { foo: 'bc' }])
+    .concatMap((x) => x.foo.split(''));
+    .then(console.log);
+    // -> ['a', 'b', 'b', 'c']
+```
+
 #### .filter(fn): ListPromise
 
 - `fn` `Function(item, i) : context` Filter callback.
 
 Creates a new `ListPromise` for the results of filtering a list with a given filter function.
+
+```js
+list([0, 10, 1, 9, 2, 8])
+    .filter((x) => x > 5);
+    .then(console.log);
+    // -> [10, 9, 8]
+```
 
 #### .reduce(fn, [initialValue]): ListPromise
 
@@ -77,9 +123,23 @@ Creates a new `ListPromise` for the results of filtering a list with a given fil
 
 Creates a new `ListPromise` for the result of reducing a list with a given reducer function. If the reduction results in an array, that array may then be iterated.
 
+```js
+list([0, 10, 1, 9, 2, 8])
+    .reduce((x, y) => x + y, 1);
+    .then(console.log);
+    // -> 31
+```
+
 #### .reverse(): ListPromise
 
 Creates a new `ListPromise` for the result of reversing the list.
+
+```js
+list(['a', 'b', 'c', 1, 2, 3])
+    .reverse()
+    .then(console.log);
+    // -> [3, 2, 1, 'c', 'b', 'a']
+```
 
 #### .sortBy(fn): ListPromise
 
@@ -89,8 +149,8 @@ Creates a new `ListPromise` for the result of sorting a list with a property get
 
 ```js
 list([{ foo: '3' }, { foo: '1' }, { foo: '2' }])
-    .sortBy(x => x.foo);
-    .then(x => console.log(x));
+    .sortBy((x) => x.foo);
+    .then(console.log);
     // -> [{ foo: '1' }, { foo: '2' }, { foo: '3' }]
 ```
 
