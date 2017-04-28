@@ -1,6 +1,6 @@
 {
   "name": "list-promise",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Maximally-concurrent Promise-aware array iteration.",
   "keywords": [],
   "license": "MIT",
