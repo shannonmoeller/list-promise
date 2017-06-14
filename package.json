@@ -2,38 +2,34 @@
   "name": "list-promise",
   "version": "2.2.1",
   "description": "Maximally-concurrent Promise-aware array iteration.",
-  "keywords": [],
-  "license": "MIT",
-  "repository": "shannonmoeller/list-promise",
-  "homepage": "https://github.com/shannonmoeller/list-promise#readme",
-  "author": {
-    "name": "Shannon Moeller",
-    "email": "me@shannonmoeller.com",
-    "url": "http://shannonmoeller.com"
+  "scripts": {
+    "prepublish": "rimraf dist && babel src --out-dir dist",
+    "report": "nyc report -r text-lcov | coveralls",
+    "test": "xo && nyc ava"
   },
+  "keywords": [],
+  "author": "Shannon Moeller <me@shannonmoeller> (http://shannonmoeller.com)",
+  "homepage": "https://github.com/shannonmoeller/list-promise#readme",
+  "repository": "shannonmoeller/list-promise",
+  "license": "MIT",
   "main": "dist/list-promise.js",
   "files": [
     "dist"
   ],
   "dependencies": {
-    "babel-runtime": "^6.11.6"
+    "babel-runtime": "^6.23.0"
   },
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-cli": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.4.0",
+    "babel-preset-env": "^1.5.2",
     "babel-register": "^6.24.1",
-    "coveralls": "^2.13.0",
-    "nyc": "^10.2.2",
-    "rimraf": "^2.5.4",
-    "xo": "^0.18.1"
-  },
-  "scripts": {
-    "prepublish": "rimraf dist && babel src --out-dir dist",
-    "report": "nyc report -r text-lcov | coveralls",
-    "test": "xo && nyc ava"
+    "coveralls": "^2.13.1",
+    "nyc": "^11.0.2",
+    "rimraf": "^2.6.1",
+    "xo": "^0.18.2"
   },
   "ava": {
     "babel": "inherit",
