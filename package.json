@@ -1,6 +1,6 @@
 {
   "name": "list-promise",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "Maximally-concurrent Promise-aware array iteration.",
   "scripts": {
     "prepublish": "rimraf dist && babel src --out-dir dist",
