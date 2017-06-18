@@ -2,7 +2,7 @@ import test from 'ava';
 import listPromise from '../src/list-promise';
 import delay from './helpers/delay';
 
-test('should be a promise', async t => {
+test('should be a promise', t => {
 	const promise = listPromise();
 
 	t.is(typeof promise.then, 'function');

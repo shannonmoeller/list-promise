@@ -7,7 +7,18 @@
     "report": "nyc report -r text-lcov | coveralls",
     "test": "xo && nyc ava"
   },
-  "keywords": [],
+  "keywords": [
+    "promise",
+    "concat",
+    "concat-map",
+    "filter",
+    "list",
+    "map",
+    "map-prop",
+    "reduce",
+    "reverse",
+    "sort-by"
+  ],
   "author": "Shannon Moeller <me@shannonmoeller> (http://shannonmoeller.com)",
   "homepage": "https://github.com/shannonmoeller/list-promise#readme",
   "repository": "shannonmoeller/list-promise",
@@ -16,16 +27,13 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "babel-runtime": "^6.23.0"
-  },
   "devDependencies": {
+    "async-to-gen": "^1.3.3",
     "ava": "^0.19.1",
     "babel-cli": "^6.24.1",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.5.2",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "babel-register": "^6.24.1",
     "coveralls": "^2.13.1",
     "nyc": "^11.0.2",
@@ -40,25 +48,10 @@
   },
   "babel": {
     "plugins": [
-      "transform-object-rest-spread",
-      "transform-runtime",
-      "add-module-exports"
-    ],
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": 4
-          }
-        }
-      ]
+      "add-module-exports",
+      "transform-es2015-modules-commonjs",
+      "transform-async-to-generator"
     ]
-  },
-  "xo": {
-    "rules": {
-      "ava/no-async-fn-without-await": "off"
-    }
   },
   "engines": {
     "node": ">= 4"

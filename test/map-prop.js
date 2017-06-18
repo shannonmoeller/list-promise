@@ -17,7 +17,7 @@ async function testMap(actual, t) {
 	t.deepEqual(items, expected);
 }
 
-test('list of items', async t => {
+test('list of items', t => {
 	const actual = [
 		{a: 1, foo: 1},
 		{b: 2, foo: 2},
@@ -27,7 +27,7 @@ test('list of items', async t => {
 	return testMap(actual, t);
 });
 
-test('list of promised items', async t => {
+test('list of promised items', t => {
 	const actual = [
 		delay({a: 1, foo: 1}),
 		delay({b: 2, foo: 2}),
@@ -37,7 +37,7 @@ test('list of promised items', async t => {
 	return testMap(actual, t);
 });
 
-test('promised list of items', async t => {
+test('promised list of items', t => {
 	const actual = delay([
 		{a: 1, foo: 1},
 		{b: 2, foo: 2},
@@ -47,7 +47,7 @@ test('promised list of items', async t => {
 	return testMap(actual, t);
 });
 
-test('promised list of promised items', async t => {
+test('promised list of promised items', t => {
 	const actual = delay([
 		delay({a: 1, foo: 1}),
 		delay({b: 2, foo: delay(2)}),
