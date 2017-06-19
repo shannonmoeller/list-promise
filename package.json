@@ -28,7 +28,6 @@
     "dist"
   ],
   "devDependencies": {
-    "async-to-gen": "^1.3.3",
     "ava": "^0.19.1",
     "babel-cli": "^6.24.1",
     "babel-plugin-add-module-exports": "^0.2.1",
